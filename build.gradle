@@ -1,0 +1,83 @@
+//
+//   Copyright 2018  SenX S.A.S.
+//
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+//
+
+// Apply the java plugin to add support for Java
+plugins {
+  id 'java'
+  id 'com.github.johnrengelman.shadow' version '4.0.3'
+  id 'eclipse'
+  id 'idea'
+}
+
+wrapper {
+  distributionType = Wrapper.DistributionType.ALL
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+  jcenter()
+  
+  maven {
+    url 'https://dl.bintray.com/senx/maven'
+  }
+
+  maven {
+    url 'https://dl.bintray.com/hbs/maven'
+  }
+}
+
+configurations {
+  provided
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+  provided 'io.warp10:warpscript:+'
+
+  compile 'com.google.zxing:core:3.3.3'
+
+  testCompile'io.warp10:warpscript:+'
+  testImplementation 'junit:junit:4.12'
+}
+
+test {
+  useJUnit()
+}
+
+sourceSets {
+  main {
+    compileClasspath = compileClasspath + configurations.provided
+  }
+}
+
+eclipse.classpath.plusConfigurations += [configurations.provided]  // Eclipse users only
+
+// for IntelliJ users
+idea {
+  module {
+    scopes.PROVIDED.plus += [configurations.provided]
+  }
+}
+
+shadowJar {
+  classifier = ''
+  manifest {
+   attributes('Implementation-Title': 'BarCode WarpScript Extension')
+   attributes('Implementation-Version': '0.0.1')
+ }
+}
+
+shadowJar.dependsOn(test)
