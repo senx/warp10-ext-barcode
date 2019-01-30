@@ -134,6 +134,16 @@ idea {
   }
 }
 
+jar {
+  from('src/main/warpscript') {
+   //
+   // Only consider macros which are in our namespace
+   //
+   include 'io.warp10/warp10-ext-barcode/*.mc2'
+   include 'io.warp10/warp10-ext-barcode/**/*.mc2'
+  }
+}
+
 shadowJar {
   classifier = ''
 
