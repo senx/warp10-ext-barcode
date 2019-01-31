@@ -54,11 +54,11 @@ BARCODE
     '>
   ]
   'conf' [ 'warpscript.extensions' ]
-  }
+  } 'info' STORE
 <%
   !$info INFO
-  SAVE 'context' STORE
-    <% BARCODE %>
+  SAVE 'context' 
+    <% 'BARCODE' EVAL %>
     <% %>
     <% %>
     TRY

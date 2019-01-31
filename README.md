@@ -1,0 +1,1 @@
+# WarpScript™ Barcode Extension
