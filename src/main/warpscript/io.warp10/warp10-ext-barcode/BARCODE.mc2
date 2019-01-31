@@ -57,7 +57,7 @@ BARCODE
   } 'info' STORE
 <%
   !$info INFO
-  SAVE 'context' 
+  SAVE 'context' STORE
     <% 'BARCODE' EVAL %>
     <% %>
     <% %>
