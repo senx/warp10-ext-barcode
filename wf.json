@@ -8,6 +8,7 @@
   "email": "contact@senx.io",
   "license": "Apache 2.0",
   "git": "https://github.com/senx/warp10-ext-barcode",
+  "repoUrl": "https://dl.bintray.com/senx/maven/",
   "tags": [
     "WarpScript",
     "barcode-generator",
