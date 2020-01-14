@@ -29,6 +29,7 @@ public class BarcodeWarpScriptExtension extends WarpScriptExtension {
     functions = new HashMap<String,Object>();
     
     functions.put("BARCODE", new BARCODE("BARCODE"));
+    functions.put("BARCODE->", new BARCODETO("BARCODE->"));
   }
   
   @Override

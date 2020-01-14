@@ -109,7 +109,7 @@ dependencies {
   // Insert your dependencies here
   //
   //compile group: 'GROUP', name: 'NAME', version: 'VERSION'
-  compile 'com.google.zxing:core:3.3.3'
+  compile 'com.google.zxing:core:3.4.0'
 
   testCompile'io.warp10:warpscript:+'
   testImplementation 'junit:junit:4.12'
