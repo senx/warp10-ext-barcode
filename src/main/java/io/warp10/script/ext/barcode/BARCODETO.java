@@ -16,6 +16,7 @@
 
 package io.warp10.script.ext.barcode;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
 import com.google.zxing.ResultPoint;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 
 import io.warp10.script.NamedWarpScriptFunction;
@@ -42,6 +44,7 @@ import processing.core.PImage;
 
 public class BARCODETO extends NamedWarpScriptFunction implements WarpScriptStackFunction {
     
+  private static final String CROP = "crop";
   private static final String FORMAT = "format";
   private static final String TIMESTAMP = "timestamp";
   private static final String TEXT = "text";
@@ -123,16 +126,60 @@ public class BARCODETO extends NamedWarpScriptFunction implements WarpScriptStac
       }
     }
     
+    int[] zone = null;
+    
+    if (params.containsKey(CROP)) {
+      Object crop = params.get(CROP);
+      if (!(crop instanceof List) || (4 != ((List) crop).size())) {
+        throw new WarpScriptException(getName() + " the '" + CROP + "' key should map to a list of LONGs defining a zone [ x y w h ] x y is upper left w/h width/height.");
+      }
+    
+      zone = new int[4];
+      
+      for (int i = 0; i < 4; i++) {
+        Object val = ((List) crop).get(i);
+        
+        if (!(val instanceof Long)) {
+          throw new WarpScriptException(getName() + " the '" + CROP + "' key should map to a list of LONGs defining a zone [ x y w h ] x y is upper left w/h width/height.");
+        }
+        
+        zone[i] = ((Long) val).intValue();        
+      }
+      
+      if (zone[2] <= 0 || zone[2] > pi.width) {
+        throw new WarpScriptException(getName() + " invalid width for '" + CROP + "'.");
+      }
+      if (zone[3] <= 0 || zone[3] > pi.height) {
+        throw new WarpScriptException(getName() + " invalid height for '" + CROP + "'.");
+      }      
+      if (zone[0] < 0 || zone[0] >= pi.width) {
+        throw new WarpScriptException(getName() + " invalid x for '" + CROP + "'.");
+      }
+      if (zone[1] < 0 || zone[1] >= pi.height) {
+        throw new WarpScriptException(getName() + " invalid y for '" + CROP + "'.");
+      }
+    }
+    
     pi.loadPixels();
     int[] pixels = Arrays.copyOf(pi.pixels, pi.pixels.length);
-    LuminanceSource source = new RGBLuminanceSource(pi.width, pi.height, pixels);
+    BufferedImage bimage = null;
+    
+    if (null == zone) {
+      bimage = new BufferedImage(pi.pixelWidth, pi.pixelHeight, BufferedImage.TYPE_INT_ARGB);
+      bimage.setRGB(0, 0, pi.pixelWidth, pi.pixelHeight, pixels, 0, pi.pixelWidth);
+    } else {
+      bimage = new BufferedImage(zone[2], zone[3], BufferedImage.TYPE_INT_ARGB);      
+      bimage.setRGB(0, 0, zone[2], zone[3], pixels, zone[0] * pi.pixelHeight + zone[1], pi.pixelWidth);
+    }
 
+    BufferedImageLuminanceSource source = new BufferedImageLuminanceSource(bimage);
     BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
     Result result = null;
     
     try {
       result = READER.decode(bitmap, hints);
-    } catch (NotFoundException nfe) {     
+    } catch (NotFoundException nfe) {
+      nfe.printStackTrace();
     }
     
     Map<String,Object> decoded = new HashMap<String,Object>();
