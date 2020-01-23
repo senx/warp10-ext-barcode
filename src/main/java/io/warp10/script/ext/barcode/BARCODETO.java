@@ -34,6 +34,7 @@ import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 
 import io.warp10.script.NamedWarpScriptFunction;
@@ -59,7 +60,7 @@ public class BARCODETO extends NamedWarpScriptFunction implements WarpScriptStac
   
   @Override
   public Object apply(WarpScriptStack stack) throws WarpScriptException {
-    
+
     MultiFormatReader READER = new MultiFormatReader();
 
     Object top = stack.pop();
@@ -163,7 +164,6 @@ public class BARCODETO extends NamedWarpScriptFunction implements WarpScriptStac
     pi.loadPixels();
     int[] pixels = Arrays.copyOf(pi.pixels, pi.pixels.length);
     BufferedImage bimage = null;
-    
     if (null == zone) {
       bimage = new BufferedImage(pi.pixelWidth, pi.pixelHeight, BufferedImage.TYPE_INT_ARGB);
       bimage.setRGB(0, 0, pi.pixelWidth, pi.pixelHeight, pixels, 0, pi.pixelWidth);
@@ -179,7 +179,9 @@ public class BARCODETO extends NamedWarpScriptFunction implements WarpScriptStac
     try {
       result = READER.decode(bitmap, hints);
     } catch (NotFoundException nfe) {
-      nfe.printStackTrace();
+    } catch (ArrayIndexOutOfBoundsException aioobe) {
+      // This may occur when attempting to decode an image which is too
+      // small for a given code (i.e. a single horizontal line for QR_Code)
     }
     
     Map<String,Object> decoded = new HashMap<String,Object>();
