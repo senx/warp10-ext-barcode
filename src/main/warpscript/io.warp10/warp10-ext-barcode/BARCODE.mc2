@@ -54,7 +54,7 @@ BARCODE
     '>
   ]
   'conf' [ 'warpscript.extensions' ]
-  } 'info' STORE
+} 'info' STORE
 <%
   !$info INFO
   SAVE 'context' STORE

@@ -109,7 +109,8 @@ dependencies {
   // Insert your dependencies here
   //
   //compile group: 'GROUP', name: 'NAME', version: 'VERSION'
-  compile 'com.google.zxing:core:3.3.3'
+  compile 'com.google.zxing:core:3.4.0'
+  compile 'com.google.zxing:javase:3.4.0'
 
   testCompile'io.warp10:warpscript:+'
   testImplementation 'junit:junit:4.12'
@@ -175,6 +176,17 @@ task sourcesJar(type: Jar) {
   from sourceSets.main.allJava
 }
 
+javadoc {
+  source = sourceSets.main.allJava
+  classpath = configurations.compile
+}
+
+task javadocJar(type: Jar) {
+  classifier = 'javadoc'
+}
+
+javadocJar.dependsOn(javadoc)
+
 publishing {
   publications {
     //
@@ -189,6 +201,7 @@ publishing {
       // We publish the result of the 'jar' task and the sources jar
       from components.java 
       artifact sourcesJar
+      artifact javadocJar
     }
 
     //
@@ -202,6 +215,7 @@ publishing {
 
       // Publish the über jar and the sources
       artifact sourcesJar
+      artifact javadocJar
       artifact shadowJar
     }
   }

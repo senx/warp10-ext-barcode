@@ -2,12 +2,17 @@
   "type": "ext",
   "group": "io.warp10",
   "artifact": "warp10-ext-barcode",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "description": "WarpScript™ Barcode Extension",
   "author": "SenX",
   "email": "contact@senx.io",
-  "license": "Apache-2.0",
+  "license": "Apache 2.0",
   "git": "https://github.com/senx/warp10-ext-barcode",
-  "tags": "warpscript, warp 10, barcode-generator, zxing",
-  "repoUrl": "https://dl.bintray.com/senx/maven/"
+  "repoUrl": "https://dl.bintray.com/senx/maven/",
+  "tags": [
+    "WarpScript",
+    "barcode-generator",
+    "zxing",
+    "warp 10"
+  ]
 }

@@ -1,5 +1,5 @@
 //
-//   Copyright 2019  SenX S.A.S.
+//   Copyright 2020  SenX S.A.S.
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package io.warp10.script.ext.barcode;
 
 import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -45,8 +46,6 @@ public class BARCODE extends NamedWarpScriptFunction implements WarpScriptStackF
   private static final String DEFAULT_FORMAT = BarcodeFormat.QR_CODE.name();
   private static final int DEFAULT_WIDTH = 50;
   private static final int DEFAULT_HEIGHT = 50;
-
-  private static final MultiFormatWriter WRITER = new MultiFormatWriter();
   
   public BARCODE(String name) {
     super(name);
@@ -107,6 +106,8 @@ public class BARCODE extends NamedWarpScriptFunction implements WarpScriptStackF
       }
     }
   
+    MultiFormatWriter WRITER = new MultiFormatWriter();
+
     try {
       BitMatrix matrix = WRITER.encode(content, bcformat, width, height, hints);
       

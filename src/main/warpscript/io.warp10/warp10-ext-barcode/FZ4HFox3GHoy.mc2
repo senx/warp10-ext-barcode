@@ -1,0 +1,71 @@
+{
+  'name' 'BARCODE->'
+  'desc'
+    <'
+Attempts to detect and decode a barcode in the input image. The detection/decoding is performed using [Google](https://google.com/)'s [Zxing](https://opensource.google.com/projects/zxing) library.
+
+The function can accept a map of hints which will be used for speeding detection within the input image. The map can have the following keys:
+
+| Key | Description |
+|-----|-------------|
+|`PURE_BARCODE`| Set to `true` to indicate the image is a pure monochrome image of a barcode. |
+|`TRY_HARDER` | Set to `true` to spend more time to try to find a barcode; optimize for accuracy, not speed. |
+|`POSSIBLE_FORMATS` | List of possible barcode formats present in the image. |
+|`CHARACTER_SET` | Specifies what character encoding to use when decoding, where applicable. |
+|`ALLOWED_LENGTHS` | List of allowed lengths of encoded data -- reject anything else. |
+|`ASSUME_CODE_39_CHECK_DIGIT` | Set to `true` to assume Code 39 codes employ a check digit. |
+|`ASSUME_GS1` | Set to `true` to assume the barcode is being processed as a GS1 barcode, and modify behavior as needed. For example this affects FNC1 handling for Code 128 (aka GS1-128). |
+|`RETURN_CODABAR_START_END` | Set to `true` to return the start and end digits in a Codabar barcode instead of stripping them. They are alpha, whereas the rest are numeric. By default, they are stripped, but this causes them to not be. |
+|`ALLOWED_EAN_EXTENSIONS` | List of allowed extensions for EAN/UPC codes. List of the allowed extension lengths, for example [2], [5], or [2, 5]. If it is optional to have an extension, do not set this hint. If this is set, and a UPC or EAN barcode is found but an extension is not, then no result will be returned at all. |
+|`CROP` | List of coordinates defining the sub-image to consider. `[ x y w h ]` `x` `y` is upper left `w`/`h` width/height. |
+
+The function will return a map. If the map is not empty then decoding was successful. The map then contains the following elements:
+
+| Key | Description |
+|-----|-------------|
+|`format`| Format of the detected barcode. |
+|`timestamp`| Timestamp of the decoding. |
+|`numbits`| Number of valid bits. |
+|`text`| Decoded text. |
+|`rawbytes`| Raw bytes encoded by the barcode, if applicable, or `NULL`. |
+|`resultpoints`| Points related to the barcode in the image. These are typically points identifying finder patterns or the corners of the barcode. The exact meaning is specific to the type of barcode that was decoded. Maps to a list of coordinates pairs. |
+|`metadata`| Map of code specific metadata, see [Zxing](https://opensource.google.com/projects/zxing) for details. |
+
+    '>
+  'sig' [
+    [ [ 'params:MAP' 'barcode:PIMAGE' ] [ 'decoded:MAP' ] ]
+    [ [ 'barcode:PIMAGE' ] [ 'decoded:MAP' ] ]
+   ]
+  'params' {
+    'params' 'Map of parameters, see description for details.'
+    'barcode' 'Image containing the barcode to decode.'
+    'decoded' 'Map containing information about the decoded barcode.'
+  }
+  'examples' [
+    <'
+{
+  'format' 'QR_CODE'
+  'width' 100
+  'height' 100
+  'content' 'Hello Warp10'
+}
+BARCODE
+Pdecode
+BARCODE->
+    '>
+  ]
+  'conf' [ 'warpscript.extensions' ]
+} 'info' STORE
+<%
+  !$info INFO
+  SAVE 'context' STORE
+    <% 'BARCODE->' EVAL %>
+    <% %>
+    <% %>
+    TRY
+    // Code of the actual macro
+  $context RESTORE
+%>
+'macro' STORE
+// Unit tests
+$macro
